@@ -1,0 +1,39 @@
+﻿Starting Student Management System Application
+java : Exception in thread 
+"main" java.lang.NoClassDefF
+oundError: 
+org/slf4j/LoggerFactory
+At line:1 char:1
++ java -jar target\StudentMa
+nagementSystem.jar > 
+run_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (Excep  
+  tion in th...j/LoggerFa   
+ ctory:String) [], Remot    
+eException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+	at com.sms.ui.ConsoleUI.<cl
+init>(ConsoleUI.java:31)
+	at com.sms.App.main(App.jav
+a:35)
+Caused by: java.lang.ClassNo
+tFoundException: 
+org.slf4j.LoggerFactory
+	at java.base/jdk.internal.l
+oader.BuiltinClassLoader.loa
+dClass(BuiltinClassLoader.ja
+va:641)
+	at java.base/jdk.internal.l
+oader.ClassLoaders$AppClassL
+oader.loadClass(ClassLoaders
+.java:188)
+	at java.base/java.lang.Clas
+sLoader.loadClass(ClassLoade
+r.java:525)
+	... 2 more

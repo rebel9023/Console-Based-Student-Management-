@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: sms-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: student_management_system
+      MYSQL_USER: smsuser
+      MYSQL_PASSWORD: smspass123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+    networks:
+      - sms-network
+
+  # PostgreSQL Database Service (Alternative)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: sms-postgres
+  #   environment:
+  #     POSTGRES_DB: student_management_system
+  #     POSTGRES_USER: smsuser
+  #     POSTGRES_PASSWORD: smspass123
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #     - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+  #   networks:
+  #     - sms-network
+
+  # Spring Boot Application Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sms-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/student_management_system
+      SPRING_DATASOURCE_USERNAME: smsuser
+      SPRING_DATASOURCE_PASSWORD: smspass123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - sms-network
+    restart: unless-stopped
+
+  # Optional: PhpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: sms-phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+    networks:
+      - sms-network
+
+volumes:
+  mysql_data:
+    driver: local
+  # postgres_data:
+  #   driver: local
+
+networks:
+  sms-network:
+    driver: bridge
